@@ -1,8 +1,20 @@
+from typing import Protocol
+
 from domain.models import (
     Evidence,
     Hypothesis,
     Incident,
 )
+
+
+class HypothGenerator(Protocol):
+
+    async def generate(
+        self,
+        incident: Incident,
+        evidence: list[Evidence],
+    ) -> list[Hypothesis]:
+        ...
 
 
 class HypothesisGenerator:

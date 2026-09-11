@@ -5,6 +5,15 @@ from domain.models import (
     RiskAssessment,
 )
 
+# class ActionAuthorization(Protocol):
+
+#     async def authorize(
+#         self,
+#         incident: Incident,
+#         decision: IncidentDecision,
+#         risk: RiskAssessment,
+#     ) -> ExecutionRoute:
+#         ...
 
 class ActionAuthorization:
 

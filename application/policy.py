@@ -5,6 +5,17 @@ from domain.models import (
     RiskAssessment,
 )
 
+# class PolicyEngine(Protocol):
+
+#     async def evaluate(
+#         self,
+#         incident: Incident,
+#         decision: IncidentDecision,
+#         action: ActionRequest,
+#         risk: RiskAssessment,
+#         policies: list[PolicyRule],
+#     ) -> PolicyEvaluation:
+#         ...
 
 class PolicyEngine:
 

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Protocol
 
 from domain.models import (
     Evidence,
@@ -14,6 +15,14 @@ class EvidenceAssessment:
     conflicts: list[str]
     coverage: float
 
+class EviAggregator(Protocol):
+
+    async def aggregate(
+        self,
+        worker_results: list[WorkerResult],
+        existing_evidence: list[Evidence],
+    ) -> list[Evidence]:
+        ...
 
 class EvidenceAggregator:
 

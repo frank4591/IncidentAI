@@ -1,11 +1,23 @@
 import asyncio
 from time import perf_counter
+from typing import Protocol
+
 
 from domain.models import (
     Incident,
+    ExecutionPlan,
     WorkerResult,
     WorkerTask,
 )
+
+class Scheduler(Protocol):
+
+    async def execute(
+        self,
+        plan: ExecutionPlan,
+        incident: Incident,
+    ) -> list[WorkerResult]:
+        ...
 
 
 class LocalScheduler:

@@ -19,3 +19,9 @@ class Worker(Protocol):
         incident: Incident,
     ) -> WorkerResult:
         ...
+
+
+class WorkerRegistry(Protocol):
+
+    def resolve(self, capability: str) -> Worker:
+        ...

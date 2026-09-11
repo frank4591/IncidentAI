@@ -6,6 +6,16 @@ from domain.models import (
 )
 
 
+# class InvestigationAssessor(Protocol):
+
+#     async def assess(
+#         self,
+#         incident: Incident,
+#         evidence: list[Evidence],
+#         hypotheses: list[Hypothesis],
+#     ) -> InvestigationAssessment:
+#         ...
+
 class InvestigationAssessor:
 
     def __init__(

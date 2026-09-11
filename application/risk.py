@@ -1,4 +1,5 @@
 from domain.models import (
+    ActionRequest,
     Incident,
     IncidentDecision,
     RiskAssessment,
@@ -7,74 +8,79 @@ from domain.models import (
 
 class RiskAnalyzer:
 
-    def evaluate_risk(
+    async def evaluate_risk(
         self,
         incident: Incident,
         decision: IncidentDecision,
-        action: str,
+        action: ActionRequest,
     ) -> RiskAssessment:
 
         score = 0.0
-        reasons = []
+        reasons: list[str] = []
 
+        # Environment
         if incident.environment == "production":
-
-            score += 0.30
+            score += 0.25
             reasons.append(
-                "Production environment."
+                "Action targets production."
             )
 
+        # Severity
         severity_scores = {
-            "P1": 0.35,
+            "P1": 0.30,
             "P2": 0.20,
             "P3": 0.10,
             "P4": 0.05,
         }
 
-        score += severity_scores.get(
+        severity_score = severity_scores.get(
             incident.severity,
+            0.10,
+        )
+
+        score += severity_score
+
+        reasons.append(
+            f"Incident severity: {incident.severity}"
+        )
+
+        # Action risk
+        action_scores = {
+            "restart_server": 0.20,
+            "rollback_deployment": 0.25,
+            "update_database": 0.40,
+            "delete_data": 0.50,
+        }
+
+        action_score = action_scores.get(
+            action.action,
             0.20,
         )
 
+        score += action_score
+
         reasons.append(
-            f"Severity {incident.severity}."
+            f"Action risk: {action.action}"
         )
 
-        if action in {
-            "restart_server",
-            "rollback_deployment",
-        }:
+        # Low confidence increases risk.
+        if decision.confidence < 0.80:
 
-            score += 0.20
+            score += 0.15
 
             reasons.append(
-                f"State-changing action: {action}."
-            )
-
-        score += max(
-            0.0,
-            0.20 * (
-                1.0 - decision.confidence
-            ),
-        )
-
-        if decision.confidence < 0.8:
-
-            reasons.append(
-                "Decision confidence is below 0.80."
+                "Incident decision has relatively "
+                "low confidence."
             )
 
         score = min(score, 1.0)
 
         if score >= 0.80:
             level = "CRITICAL"
-
         elif score >= 0.60:
             level = "HIGH"
-
-        elif score >= 0.35:
+        elif score >= 0.30:
             level = "MEDIUM"
-
         else:
             level = "LOW"
 
